@@ -1,7 +1,7 @@
 Flask==3.0.3
 Werkzeug==3.0.3
 opencv-python-headless==4.10.0.84
-mediapipe==0.10.14
+mediapipe==0.10.35
 numpy==2.1.2
 PyAutoGUI==0.9.54
 requests==2.32.3
