@@ -1,12 +1,11 @@
 import csv
-import time
 import cv2
 import mediapipe as mp
 import os
 import glob
 import datetime
 import numpy as np
-import pyautogui
+from PIL import Image
 
 
 from calculate_angles import calculate_angle, calculate_trunk_lean, get_text_color, evaluate_angle, count_conditions, get_point, evaluate_each_body,evaluate_each_body_sum
@@ -53,8 +52,6 @@ def process_video(video_path, output_dir="data"):
     fps = cap.get(cv2.CAP_PROP_FPS)
     width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
     height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-
-    screen_width, screen_height = pyautogui.size()
 
     # Initialize video writer
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')  # or 'XVID'
@@ -106,13 +103,8 @@ def process_video(video_path, output_dir="data"):
                                           [-1, -1, -1]])
             enhanced = cv2.filter2D(blurred, -1, sharpening_kernel)
             _, mask = cv2.threshold(enhanced, 50, 255, cv2.THRESH_BINARY)
-            scale_w = screen_width / width
-            scale_h = screen_height / height
-            scale = min(scale_w, scale_h, 1.0)
-            new_width = int(width * scale)
-            new_height = int(height * scale)
-            image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-            results = pose.process(image_rgb)
+            image_rgb = Image.fromarray(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
+            results = pose.process(np.asarray(image_rgb))
 
             # Initialize variables with default values
             trunk_lean = 0
@@ -254,17 +246,8 @@ def process_video(video_path, output_dir="data"):
 
             out.write(image)
 
-            resized_frame = cv2.resize(image, (new_width, new_height))
-
-            cv2.imshow('Running Analysis', resized_frame)
-
-            time.sleep(0.05)
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                break
-
     cap.release()
     out.release()
-    cv2.destroyAllWindows()
 
     # Summary after video processing
     if total_frames > 0:
@@ -399,6 +382,13 @@ def process_multiple_videos(video_dir, output_dir="output", file_types=None):
     print(f"Summary file created: {all_videos_summary_file}")
 
     return results
+
+
+# Example usage
+if __name__ == "__main__":
+
+    video_directory = "input_videos"  # Change this to your directory with videos
+    results = process_multiple_videos(video_directory)
 
 
 # Example usage
