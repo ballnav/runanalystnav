@@ -1,0 +1,41 @@
+<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background circle -->
+  <circle cx="100" cy="100" r="90" fill="#0d6efd" opacity="0.9"/>
+  <circle cx="100" cy="100" r="85" fill="#ffffff" opacity="0.9"/>
+  
+  <!-- Running figure silhouette -->
+  <g transform="translate(50, 40) scale(0.55)">
+    <!-- Head -->
+    <circle cx="70" cy="45" r="20" fill="#0d6efd"/>
+    
+    <!-- Body -->
+    <path d="M70,65 L70,110 L85,135 L95,125 L85,105 L95,95 L85,80 L95,70 Z" fill="#0d6efd"/>
+    
+    <!-- Arms -->
+    <path d="M70,75 L40,90 M70,95 L100,120" stroke="#0d6efd" stroke-width="8" stroke-linecap="round"/>
+    
+    <!-- Legs in running position -->
+    <path d="M85,105 L60,150 L70,155 M85,105 L120,130 L130,120" stroke="#0d6efd" stroke-width="8" stroke-linecap="round"/>
+  </g>
+  
+  <!-- Analytical elements -->
+  <!-- Joint tracking points -->
+  <circle cx="89" cy="64" r="3" fill="#dc3545"/>
+  <circle cx="85" cy="98" r="3" fill="#dc3545"/>
+  <circle cx="73" cy="123" r="3" fill="#dc3545"/>
+  <circle cx="102" cy="106" r="3" fill="#dc3545"/>
+  
+  <!-- Angle visualization -->
+  <path d="M85,98 L95,98 A10,10 0 0,1 92,108 Z" fill="#198754" opacity="0.7"/>
+  
+  <!-- Graph element -->
+  <path d="M130,130 L155,130 L155,100 L180,100" stroke="#fd7e14" stroke-width="3" fill="none" stroke-linecap="round"/>
+  
+  <!-- Data pulse line -->
+  <path d="M25,150 Q40,130 50,150 Q60,170 70,150 Q80,130 90,150 Q100,170 110,150 Q120,130 130,150 Q140,170 150,150 Q160,130 170,150" 
+        stroke="#0d6efd" stroke-width="2.5" fill="none"/>
+  
+  <!-- Measurement lines -->
+  <line x1="90" y1="64" x2="110" y2="64" stroke="#0d6efd" stroke-width="1" stroke-dasharray="2,2"/>
+  <line x1="86" y1="98" x2="106" y2="98" stroke="#0d6efd" stroke-width="1" stroke-dasharray="2,2"/>
+</svg>

@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Running Analysis</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .drop-container {
+            border: 2px dashed #0d6efd;
+            border-radius: 8px;
+            padding: 30px;
+            text-align: center;
+            background-color: #f8f9fa;
+            transition: border 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        .drop-container:hover {
+            border-color: #0a58ca;
+            background-color: #e9ecef;
+        }
+
+        .drop-title {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: #6c757d;
+        }
+
+        #fileInput {
+            display: block;
+            width: 100%;
+            margin-bottom: 15px;
+        }
+
+        .floating-button {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: #0d6efd;
+            color: white;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .floating-button:hover {
+            background-color: #0a58ca;
+            transform: scale(1.1);
+        }
+
+        .table-responsive {
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        .summary-card {
+            margin-top: 20px;
+            border-left: 5px solid #0d6efd;
+        }
+
+        .metric-card {
+            transition: transform 0.2s;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .good-result {
+            color: #198754;
+            border-left: 4px solid #198754;
+        }
+
+        .satisfactory-result {
+            color: #fd7e14;
+            border-left: 4px solid #fd7e14;
+        }
+
+        .improve-result {
+            color: #dc3545;
+            border-left: 4px solid #dc3545;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 250px;
+            width: 100%;
+        }
+
+        thead.table-dark th {
+            position: sticky;
+            top: 0;
+            background-color: #343a40; /* คงสีพื้นหลังของหัวตาราง */
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="text-center mb-4">
+                    <h1 class="display-4">Running Analysis</h1>
+                    <hr class="my-4">
+                </div>
+
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <form id="uploadForm" method="post" enctype="multipart/form-data" action="/analyze">
+                            <div class="drop-container" id="drop-container">
+                                <div class="drop-title" id="drop-title">Drag and drop files here or click to select files</div>
+                                <input type="file" class="form-control" id="fileInput" name="video" accept="video/*">
+                                <button type="submit" class="btn btn-primary">Analyze</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="card shadow-sm mt-4">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">Analysis Results</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive" id="results">
+                            <table class="table table-striped table-hover mb-0">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>Frame</th>
+                                        <th>Running Cycle</th>
+                                        <th>Sub Phase</th>
+                                        <th>% Cycle</th>
+                                        <th>Trunk Lean</th>
+                                        <th>Front Knee Angle</th>
+                                        <th>Back Knee Angle</th>
+                                        <th>Front Hip Angle</th>
+                                        <th>Angle Each Body %</th>
+                                        <th>Result</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Results will be populated here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Summary Section -->
+<!-- Replace your existing summary section with this enhanced version -->
+<div class="card shadow-sm mt-4 summary-card" id="summary-section">
+    <div class="card-header bg-primary text-white">
+        <h5 class="mb-0">Running Analysis Summary</h5>
+    </div>
+    <div class="card-body">
+        <!-- Overall Stats Row -->
+        <div class="row mb-4">
+            <div class="col-md-3 mb-3">
+                <div class="card h-100 shadow-sm metric-card" id="cycles-card">
+                    <div class="card-body text-center">
+                        <h6 class="card-subtitle mb-2 text-muted">Total Cycles</h6>
+                        <h2 class="card-title text-primary" id="cycle-count">-</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="card h-100 shadow-sm metric-card" id="frames-card">
+                    <div class="card-body text-center">
+                        <h6 class="card-subtitle mb-2 text-muted">Total Frames</h6>
+                        <h2 class="card-title text-primary" id="frame-count">-</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-3">
+                <div class="card h-100 shadow-sm metric-card" id="angle-card">
+                    <div class="card-body text-center">
+                        <h6 class="card-subtitle mb-2 text-muted">Overall Form Quality</h6>
+                        <h2 class="card-title" id="angle-score">-</h2>
+                        <p class="card-text" id="angle-result">-</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Body Metrics Column -->
+            <div class="col-md-6">
+                <h6 class="text-muted mb-3">Angle Body Position Metrics Joint</h6>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <div class="card h-100 shadow-sm metric-card" id="trunk-card">
+                            <div class="card-body">
+                                <h6 class="card-subtitle mb-2 text-muted">Trunk Lean</h6>
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <h4 class="card-title mb-0" id="trunk-percentage">-</h4>
+                                        <small class="text-muted">Quality Score</small>
+                                    </div>
+                                    <div class="text-end">
+                                        <h4 class="card-title mb-0" id="trunk-value">-</h4>
+                                        <small class="text-muted">Total Value</small>
+                                    </div>
+                                </div>
+                                <p class="card-text mt-2" id="trunk-result">-</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="card h-100 shadow-sm metric-card" id="hip-card">
+                            <div class="card-body">
+                                <h6 class="card-subtitle mb-2 text-muted">Hip Angle</h6>
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <h4 class="card-title mb-0" id="hip-percentage">-</h4>
+                                        <small class="text-muted">Quality Score</small>
+                                    </div>
+                                    <div class="text-end">
+                                        <h4 class="card-title mb-0" id="hip-value">-</h4>
+                                        <small class="text-muted">Total Value</small>
+                                    </div>
+                                </div>
+                                <p class="card-text mt-2" id="hip-result">-</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <div class="card h-100 shadow-sm metric-card" id="front-knee-card">
+                            <div class="card-body">
+                                <h6 class="card-subtitle mb-2 text-muted">Front Knee</h6>
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <h4 class="card-title mb-0" id="front-knee-percentage">-</h4>
+                                        <small class="text-muted">Quality Score</small>
+                                    </div>
+                                    <div class="text-end">
+                                        <h4 class="card-title mb-0" id="front-knee-value">-</h4>
+                                        <small class="text-muted">Total Value</small>
+                                    </div>
+                                </div>
+                                <p class="card-text mt-2" id="front-knee-result">-</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="card h-100 shadow-sm metric-card" id="back-knee-card">
+                            <div class="card-body">
+                                <h6 class="card-subtitle mb-2 text-muted">Back Knee</h6>
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <h4 class="card-title mb-0" id="back-knee-percentage">-</h4>
+                                        <small class="text-muted">Quality Score</small>
+                                    </div>
+                                    <div class="text-end">
+                                        <h4 class="card-title mb-0" id="back-knee-value">-</h4>
+                                        <small class="text-muted">Total Value</small>
+                                    </div>
+                                </div>
+                                <p class="card-text mt-2" id="back-knee-result">-</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Performance Distribution Column -->
+            <div class="col-md-6">
+                <h6 class="text-muted mb-3">Performance Distribution</h6>
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <div class="chart-container">
+                            <canvas id="performanceChart"></canvas>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-md-4 text-center">
+                                <div class="d-flex align-items-center justify-content-center">
+                                    <div style="width: 15px; height: 15px; background-color: #198754; margin-right: 5px;"></div>
+                                    <span>Good</span>
+                                </div>
+                                <div class="d-flex justify-content-center align-items-baseline mt-2">
+                                    <h4 id="good-percentage" class="mb-0 me-2">-</h4>
+                                    <small class="text-muted" id="good-count">(-)</small>
+                                </div>
+                            </div>
+                            <div class="col-md-4 text-center">
+                                <div class="d-flex align-items-center justify-content-center">
+                                    <div style="width: 15px; height: 15px; background-color: #fd7e14; margin-right: 5px;"></div>
+                                    <span>Satisfactory</span>
+                                </div>
+                                <div class="d-flex justify-content-center align-items-baseline mt-2">
+                                    <h4 id="satisfactory-percentage" class="mb-0 me-2">-</h4>
+                                    <small class="text-muted" id="satisfactory-count">(-)</small>
+                                </div>
+                            </div>
+                            <div class="col-md-4 text-center">
+                                <div class="d-flex align-items-center justify-content-center">
+                                    <div style="width: 15px; height: 15px; background-color: #dc3545; margin-right: 5px;"></div>
+                                    <span>ฺBad</span>
+                                </div>
+                                <div class="d-flex justify-content-center align-items-baseline mt-2">
+                                    <h4 id="improve-percentage" class="mb-0 me-2">-</h4>
+                                    <small class="text-muted" id="improve-count">(-)</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Performance Ranking Section -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <h6 class="text-muted mb-3">Performance Ranking</h6>
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <div id="ranked-results">
+                            <!-- Ranked results will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button class="floating-button" onclick="toggleScroll()" id="scrollButton">↓</button>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>

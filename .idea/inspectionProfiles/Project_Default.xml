@@ -1,0 +1,33 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="PyPep8Inspection" enabled="true" level="WEAK WARNING" enabled_by_default="true">
+      <option name="ignoredErrors">
+        <list>
+          <option value="E302" />
+          <option value="E122" />
+        </list>
+      </option>
+    </inspection_tool>
+    <inspection_tool class="PyTypeCheckerInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="PyUnresolvedReferencesInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredIdentifiers">
+        <list>
+          <option value="numpy.random._examples.cython.extending" />
+          <option value="mediapipe" />
+          <option value="MediaPipe" />
+          <option value="mediapipe1.*" />
+          <option value="PoseO.*" />
+          <option value="Tensorflow1.*" />
+          <option value="solutions.pose.*" />
+          <option value="mediapipe.solutions.*" />
+          <option value="mediapipe.python.solutions.pose.PoseLandmark.*" />
+          <option value="miniproject1.*" />
+          <option value="miniproject1.threshold1" />
+          <option value="project.*" />
+          <option value="flask_socketio" />
+        </list>
+      </option>
+    </inspection_tool>
+  </profile>
+</component>

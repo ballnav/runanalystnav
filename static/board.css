@@ -1,0 +1,123 @@
+body {
+  margin: 20px 100px;
+  justify-content: center;
+}
+title{
+   position: center;
+}
+
+/* Container for result board */
+.resultBoard {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    margin-top: 30px;
+}
+
+/* Title for result board */
+.resultBoard h2 {
+    font-size: 24px;
+    color: #4CAF50;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* Section for individual result rows */
+.resultBoard .result-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid #ddd;
+}
+
+.resultBoard .result-row:last-child {
+    border-bottom: none;
+}
+
+/* Label for the result category */
+.resultBoard .result-row .label {
+    font-size: 18px;
+    color: #333;
+    font-weight: bold;
+}
+
+/* Value for the result */
+.resultBoard .result-row .value {
+    font-size: 18px;
+    color: #333;
+}
+
+/* Section for the result percentage */
+.resultBoard .result-row .percentage {
+    font-size: 18px;
+    font-weight: bold;
+    color: #4CAF50;
+}
+
+/* Color coding for Good, Satisfactory, Should Improve */
+.resultBoard .good {
+    background-color: #4CAF50;
+    color: white;
+    padding: 5px 15px;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.resultBoard .satisfactory {
+    background-color: #FFC107;
+    color: black;
+    padding: 5px 15px;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.resultBoard .should-improve {
+    background-color: #F44336;
+    color: white;
+    padding: 5px 15px;
+    border-radius: 5px;
+    text-align: center;
+}
+
+/* Result status */
+.resultBoard .result-status {
+    font-size: 16px;
+    margin-top: 20px;
+    font-weight: bold;
+    text-align: center;
+}
+
+/* Final result box */
+.resultBoard .final-result {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px;
+    font-size: 20px;
+    border-radius: 5px;
+    text-align: center;
+    margin-top: 30px;
+}
+
+/* Loading or error message */
+.resultBoard .error-message, .resultBoard .loading-message {
+    background-color: #f44336;
+    color: white;
+    padding: 10px;
+    text-align: center;
+    border-radius: 5px;
+    margin-top: 20px;
+}
+
+/* Success message */
+.resultBoard .success-message {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px;
+    text-align: center;
+    border-radius: 5px;
+    margin-top: 20px;
+}
